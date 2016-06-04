@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="QApp">
+    <head>
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body ng-controller="QCtrl">
+        <form ng-submit="search()">
+            <div>
+                <input type="text" ng-model="query" placeholder="Search...">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+        <br>
+        <div ng-repeat="video in videos" ng-cloak>
+            <div><em>Title:</em> {{video.snippet.title}}</div>
+            <div><em>Channel:</em> {{video.snippet.channelTitle}}</div>
+            <div><em>Description:</em> {{video.snippet.description}}</div>
+            <hr>
+        </div>
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+        <script>
+            var app = angular.module('QApp', []);
+
+            app.controller('QCtrl', ['$scope', '$http', function($scope, $http) {
+                console.log('App ready...');
+                $scope.videos = {};
+                $scope.search = function() {
+                    var url = 'https://www.googleapis.com/youtube/v3/search?id=7lCDEYXw3mM&key=AIzaSyCrOV6HpmkcJe9LyZoQalPwyZXEfGtPjvU&part=snippet&q=';
+                    url += encodeURI($scope.query);
+                    $http.get(url)
+                        .success(function(data, status, headers, config) {
+                            $scope.videos = data.items;
+                            console.log(data);
+                        }).error(function(data, status, headers, config) {
+
+                        });
+                };
+            }]);
+        </script>
+    </body>
+</html>
